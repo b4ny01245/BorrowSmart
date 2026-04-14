@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BorrowSmart - Asset Tracking</title>
+  <link rel="icon" href="data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+  <rect width='100' height='100' rx='22' fill='%23ff4fa3'/>
+  <circle cx='40' cy='50' r='14' fill='white'/>
+  <circle cx='40' cy='50' r='6' fill='%23ff4fa3'/>
+  <rect x='50' y='46' width='28' height='8' rx='3' fill='white'/>
+  <rect x='62' y='54' width='6' height='10' fill='white'/>
+  <rect x='70' y='54' width='6' height='6' fill='white'/>
+</svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="config.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="user.js" defer></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg-layer">
+  <div class="bg-gradient"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+</div>
+
+<header class="header">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+      </svg>
+    </div>
+    BorrowSmart
+  </a>
+  <button class="mobile-menu-btn" aria-label="Toggle menu">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+    </svg>
+  </button>
+  <nav class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="contact.html">Message</a>
+    <a href="about.html">About</a>
+    <a href="admin.html" class="nav-admin">Admin</a>
+  </nav>
+</header>
+
+<div class="mobile-nav">
+  <a href="index.html" class="active">Home</a>
+  <a href="contact.html">Message</a>
+  <a href="about.html">About</a>
+  <a href="admin.html">Admin</a>
+</div>
+
+<div class="container scanner-container">
+  <div class="hero">
+    <h1>Smart Asset Tracking</h1>
+    <p>Streamlined Check-Outs for a Smarter Workplace</p>
+  </div>
+
+  <div class="login-wrapper">
+  <button class="google-btn" onclick="customLogin()">
+    <svg class="google-icon" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.73 1.22 9.24 3.6l6.9-6.9C35.64 2.14 30.2 0 24 0 14.82 0 6.9 5.48 3.42 13.44l8.02 6.23C13.4 13.2 18.28 9.5 24 9.5z"/>
+      <path fill="#4285F4" d="M46.1 24.5c0-1.64-.15-3.22-.42-4.75H24v9h12.4c-.54 2.9-2.2 5.36-4.7 7.02l7.2 5.6c4.2-3.88 6.6-9.6 6.6-16.87z"/>
+      <path fill="#FBBC05" d="M11.44 28.67A14.5 14.5 0 019.5 24c0-1.63.28-3.2.78-4.67l-8.02-6.23A23.93 23.93 0 000 24c0 3.8.9 7.4 2.5 10.56l8.94-5.89z"/>
+      <path fill="#34A853" d="M24 48c6.2 0 11.4-2.05 15.2-5.57l-7.2-5.6c-2 1.35-4.56 2.17-8 2.17-5.72 0-10.6-3.7-12.36-8.87l-8.94 5.89C6.9 42.52 14.82 48 24 48z"/>
+    </svg>
+    <span>Continue with Google</span>
+  </button>
+</div>
+  <p id="userInfo"></p>
+
+  <div class="scanner-card">
+    <div class="scanner-header">
+      <div class="scanner-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75h-.75v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75h-.75v-.75z" />
+        </svg>
+      </div>
+      <div class="scanner-title">
+        <h2>QR Scanner</h2>
+        <p>Position the QR code within the frame</p>
+      </div>
+    </div>
+    <div id="scanner"></div>
+    <button id="scanAgainBtn" style="display:none;margin:12px auto;padding:10px 16px;background:transparent;border:2px solid #d63384;color:#d63384;border-radius:10px;cursor:pointer;">
+        🔄 Scan Again
+    </button>
+  </div>
+
+  <div class="scanResult">
+    <p>Scanned Asset</p>
+    <h3 id="assetID">None</h3>
+  </div>
+  
+  <div class="actions">
+    <button id="borrowBtn" onclick="confirmBorrow()" style="display:none;">Borrow</button>
+    <button id="returnBtn" onclick="returnAsset()" style="display:none;">Return</button>
+  </div>
+  <p id="status"></p>
+</div>
+
+  <!-- INVENTORY — Feature 3: added Borrowed At & Returned At columns -->
+  <div class="section">
+    <h2 class="section-title">Inventory</h2>
+    <div class="card" style="max-width:1100px; margin:0 auto;">
+      <input type="text" id="search" placeholder="Search..." onkeyup="searchInventory()">
+      <div class="table-container">
+        <table class="user-table">
+          <thead>
+            <tr>
+              <th>Asset Name</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th>Holder</th>
+              <th>Transaction Date &amp; Time</th>
+            </tr>
+          </thead>
+          <tbody id="userAssetBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+<div id="borrowPopup" class="popup">
+  <div class="popupContent">
+    <h3>Confirm Borrow</h3>
+    <p>Asset: <span id="popupAsset"></span></p>
+    <div class="popup-buttons">
+      <button onclick="closePopup()">Cancel</button>
+      <button onclick="borrowAsset()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div id="cameraModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; flex-direction:column; justify-content:center; align-items:center;">
+  <video id="cameraPreview" autoplay playsinline style="width:90%; max-width:400px; border-radius:12px;"></video>
+  <canvas id="snapshot" style="display:none;"></canvas>
+  <div style="margin-top:15px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+    <button onclick="captureReturnPhoto()" style="padding:10px 16px; border-radius:8px;">📸 Capture</button>
+    <button id="submitReturnBtn" onclick="submitReturnWithPhoto()" style="padding:10px 16px; border-radius:8px; display:none;">✅ Submit Return</button>
+    <button onclick="closeCamera()" style="padding:10px 16px; border-radius:8px;">❌ Cancel</button>
+    <button id="retakeBtn" style="display:none;" onclick="retakePhoto()">🔄 Retake</button>
+    <img id="photoPreview" style="display:none; width:70%; border-radius:10px;" />
+  </div>
+</div>
+
+</body>
+</html>

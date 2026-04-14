@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard - BorrowSmart</title>
+<link rel="icon" href="data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+  <rect width='100' height='100' rx='22' fill='%23ff4fa3'/>
+  <circle cx='40' cy='50' r='14' fill='white'/>
+  <circle cx='40' cy='50' r='6' fill='%23ff4fa3'/>
+  <rect x='50' y='46' width='28' height='8' rx='3' fill='white'/>
+  <rect x='62' y='54' width='6' height='10' fill='white'/>
+  <rect x='70' y='54' width='6' height='6' fill='white'/>
+</svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+<script src="admin2.js" defer></script>
+<style>
+  .category-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 13px;
+    color: inherit;
+  }
+  .category-tag-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    font-size: 16px;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s;
+  }
+  .category-tag-delete:hover {
+    color: #ff4fa3;
+  }
+</style>
+</head>
+
+<body>
+<div class="bg-layer">
+  <div class="bg-gradient"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+</div>
+
+<header class="header">
+  <a href="index.html" class="logo">
+    <div class="logo-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+      </svg>
+    </div>
+    BorrowSmart
+  </a>
+  <button class="mobile-menu-btn" aria-label="Toggle menu">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+    </svg>
+  </button>
+  <nav class="nav-links" id="mainNav"></nav>
+</header>
+
+<div class="mobile-nav" id="mobileNav"></div>
+
+<div class="container container-wide">
+
+  <!-- LOGIN -->
+  <div id="loginSection" class="page-hero" style="display: none;">
+    <div class="card animate-in" style="max-width: 400px; margin: 0 auto;">
+      <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin-bottom: 8px; text-align: center;">Admin Login</h3>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="username" required placeholder="">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" required placeholder="">
+        </div>
+        <div id="loginError" style="display:none; text-align:center; color: var(--danger); margin-top: 16px;">Invalid credentials</div>
+        <button type="submit" class="btn-primary" style="width:100%; margin-top: 8px;">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboardSection" style="display: none;">
+    <div class="page-hero">
+      <h1>Admin Dashboard</h1>
+      <p>Manage assets, generate reports, and track inventory.</p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-grid animate-in">
+      <div class="stat-card">
+        <div class="stat-value" id="borrowedAssets">0</div>
+        <div class="stat-label">Borrowed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="availableAssets">0</div>
+        <div class="stat-label">Available</div>
+      </div>
+    </div>
+
+    <!-- ADD ASSET -->
+    <div class="section">
+      <h2 class="section-title">Add New Asset</h2>
+      <div class="card animate-in" style="max-width:800px; margin:0 auto;">
+        <form id="addAssetForm" onsubmit="event.preventDefault(); addAsset();">
+          <div class="grid-2" style="gap:16px; margin-bottom:16px;">
+            <div class="form-group">
+              <label>Asset Name</label>
+              <input type="text" id="assetName" required placeholder="Enter asset name">
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="category" required onchange="handleCategoryChange(this.value)">
+                <option value="">Select Category</option>
+                <option value="Keys">Keys</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Equipment">Equipment</option>
+                <option value="Tools">Tools</option>
+                <option value="Others">Others</option>
+              </select>
+              <!-- Custom category tags appear here -->
+              <div id="categoryTagList" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;"></div>
+            </div>
+          </div>
+          <div id="customCategoryDiv" class="form-group" style="display:none; margin-top:16px;">
+            <label>Enter Category Name</label>
+            <input type="text" id="customCategory" placeholder="Enter custom category name">
+          </div>
+          <div style="display:flex; gap:16px; align-items:center;">
+            <button type="submit" class="btn-primary" id="addAssetBtn">Add Asset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="section">
+      <div class="inventory-header">
+        <h2 class="section-title">Inventory</h2>
+        <button class="btn-secondary" onclick="downloadCSV()">Download CSV</button>
+      </div>
+      <div class="card" style="max-width:1200px; margin:0 auto;">
+        <input type="text" id="search" placeholder="Search assets..." onkeyup="searchInventory()">
+        <div class="table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Holder</th>
+                <th>Transaction Date &amp; Time</th>
+                <th>QR</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="assetBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end dashboardSection -->
+
+</div>
+
+<script>
+// ================= Auto Logout on Page Close/Navigate =================
+window.addEventListener("beforeunload", function() {
+  localStorage.removeItem("adminLoggedIn");
+  localStorage.removeItem("currentAdmin");
+});
+</script>
+</body>
+</html>

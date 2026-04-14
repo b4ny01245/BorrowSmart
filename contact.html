@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact - BorrowSmart</title>
+
+<link rel="icon" href="data:image/svg+xml,
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+  <rect width='100' height='100' rx='22' fill='%23ff4fa3'/>
+  <circle cx='40' cy='50' r='14' fill='white'/>
+  <circle cx='40' cy='50' r='6' fill='%23ff4fa3'/>
+  <rect x='50' y='46' width='28' height='8' rx='3' fill='white'/>
+  <rect x='62' y='54' width='6' height='10' fill='white'/>
+  <rect x='70' y='54' width='6' height='6' fill='white'/>
+</svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+</head>
+
+<body>
+
+<div class="bg-layer">
+  <div class="bg-gradient"></div>
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+</div>
+
+<header class="header">
+  <a href="index.html" class="logo">
+    <div class="logo-icon"></div>
+    BorrowSmart
+  </a>
+
+  <button class="mobile-menu-btn" aria-label="Toggle menu">☰</button>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="contact.html" class="active">Message</a>
+    <a href="about.html">About</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+
+<div class="mobile-nav">
+  <a href="index.html">Home</a>
+  <a href="contact.html" class="active">Message</a>
+  <a href="about.html">About</a>
+  <a href="admin.html">Admin</a>
+</div>
+
+<div class="container" style="max-width: 680px;">
+  <div class="page-hero">
+    <h1>Send a Message</h1>
+    <p>Have a question or concern? Send a message directly to our admin team.</p>
+  </div>
+
+  <div class="section">
+    <div class="card animate-in">
+
+      <div class="form-group">
+        <label>Sender</label>
+        <p>Logged in as: <strong id="displayName"></strong></p>
+      </div>
+
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="messageBody" rows="5"
+          placeholder="Write your message here..."></textarea>
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <button class="btn-primary" onclick="sendContactMessage()" id="sendBtn">
+          Send Message
+        </button>
+        <span id="sendStatus" style="font-size:14px;"></span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Mobile menu
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const mobileNav = document.querySelector('.mobile-nav');
+
+  if (mobileMenuBtn && mobileNav) {
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileNav.classList.toggle('active');
+      document.body.classList.toggle('menu-open');
+    });
+
+    document.querySelectorAll('.mobile-nav a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileNav.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      });
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        mobileNav.classList.remove('active');
+        document.body.classList.remove('menu-open');
+      }
+    });
+  }
+
+  // Show logged-in user
+  document.getElementById("displayName").innerText =
+    localStorage.getItem("userName") || "Guest";
+
+  // Animate cards
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.card').forEach(el => observer.observe(el));
+});
+
+async function sendContactMessage() {
+  const name    = localStorage.getItem("userName")  || "";
+  const email   = localStorage.getItem("userEmail") || "";
+  const message = document.getElementById('messageBody').value.trim();
+
+  const status = document.getElementById('sendStatus');
+  const btn    = document.getElementById('sendBtn');
+
+  if (!name) {
+    status.style.color = 'red';
+    status.textContent = 'You are not logged in.';
+    return;
+  }
+
+  if (!message) {
+    status.style.color = 'red';
+    status.textContent = 'Please enter a message.';
+    return;
+  }
+
+  btn.disabled = true;
+  status.style.color = '#999';
+  status.textContent = 'Sending...';
+
+  try {
+    const params = new URLSearchParams({ action: 'submitMessage', name, email, message });
+
+    const res  = await fetch(CONFIG.ADMIN_API_URL + '?' + params.toString());
+    const data = await res.json();
+
+    if (data.success) {
+      status.style.color = 'lightgreen';
+      status.textContent = 'Message sent successfully!';
+      document.getElementById('messageBody').value = '';
+    } else {
+      status.style.color = 'red';
+      status.textContent = data.error || 'Failed to send message.';
+    }
+
+  } catch (err) {
+    console.error(err);
+    status.style.color = 'red';
+    status.textContent = 'Network error. Please try again.';
+  }
+
+  btn.disabled = false;
+}
+</script>
+
+</body>
+</html>
